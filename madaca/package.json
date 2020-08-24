@@ -1,0 +1,33 @@
+{
+  "name": "madaca",
+  "version": "1.0.0",
+  "description": "My impressive Nuxt.js project",
+  "author": "Kunihiko Karasawa",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "cookie-universal-nuxt": "^2.1.4",
+    "firebase": "^7.19.0",
+    "firebase-auth": "^0.1.2",
+    "nuxt": "^2.0.0",
+    "vue-property-decorator": "^9.0.0",
+    "vuex-persistedstate": "^2.7.1"
+  },
+  "devDependencies": {
+    "@mdi/js": "^4.9.95",
+    "@nuxt/types": "^2.14.3",
+    "@nuxt/typescript-build": "^2.0.2",
+    "@nuxtjs/eslint-config": "^1.0.1",
+    "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/vuetify": "^1.11.2",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^6.1.0",
+    "eslint-plugin-nuxt": ">=0.4.2"
+  }
+}
