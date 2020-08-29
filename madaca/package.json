@@ -23,11 +23,7 @@
     "@mdi/js": "^4.9.95",
     "@nuxt/types": "^2.14.3",
     "@nuxt/typescript-build": "^2.0.2",
-    "@nuxtjs/eslint-config": "^1.0.1",
-    "@nuxtjs/eslint-module": "^1.0.0",
     "@nuxtjs/vuetify": "^1.11.2",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^6.1.0",
-    "eslint-plugin-nuxt": ">=0.4.2"
+    "prettier": "^2.1.1"
   }
 }

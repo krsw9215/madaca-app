@@ -1,13 +1,13 @@
 export const state = () => ({
-    email: null
-  })
+  isLogin: false
+})
 
 export const getters = {
-  email: state => state.email,
+  isLogin: state => state.isLogin
 }
 
 export const mutations = {
-  setEmail(state, payload) {
-    state.email = payload;
+  setLogin (state, payload) {
+    state.isLogin = payload
   }
 }
