@@ -5,6 +5,12 @@
         <H3>あなたの駅：{{stationName}}</H3>
         <br />
       </div>
+      <div v-if="isRegisterd">
+        <v-btn text v-on:click="addStation">テスト</v-btn>
+      </div>
+      <v-overlay :value="isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
     </v-flex>
   </v-layout>
 </template>
@@ -12,11 +18,13 @@
 <script>
 import { auth } from "../plugins/firebase";
 import { firestore } from "../plugins/firebase";
+import { functions } from "../plugins/firebase";
 
 export default {
   name: "HomePage",
   data() {
     return {
+      isLoading: false,
       isRegisterd: false,
       stationName: "",
       userName: "",
@@ -78,6 +86,37 @@ export default {
             console.error("Error writing document: ", error);
           });
       }
+    },
+    addStation() {
+      this.isLoading = true;
+      const app = this;
+      const func = functions.httpsCallable("addStation");
+      func()
+        .then((res) => {
+          let station_id = res.data.station_id;
+          if (station_id) {
+            firestore
+              .collection("Stations")
+              .doc(station_id)
+              .get()
+              .then((doc) => {
+                app.isLoading = false;
+                let newStationName = doc.data().stationName;
+                alert("駅を獲得しました！:" + newStationName + '駅');
+              })
+              .catch((error) => {
+                app.isLoading = false;
+                console.error("Error writing document: ", error);
+              });
+          } else {
+            app.isLoading = false;
+            console.log(res.data);
+          }
+        })
+        .catch((e) => {
+          app.isLoading = false;
+          console.log(e);
+        });
     },
   },
 };
