@@ -1,75 +1,70 @@
 <template>
-  <v-app dark>
-    <v-app-bar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
-      <v-toolbar-title v-text="title" />
-      <v-spacer />
-      <v-btn v-if="isLogin" @click="logout">
-        ログアウト
-      </v-btn>
-    </v-app-bar>
-    <v-main>
+  <v-app>
+    <v-main class="bg">
+      <v-btn v-if="isLogin" @click="logout">ログアウト</v-btn>
       <v-container>
         <nuxt />
       </v-container>
     </v-main>
-    <v-footer
-      :fixed="fixed"
-      app
-    >
-      <span>&copy; 2020 Landing Apps Inc.</span>
-    </v-footer>
   </v-app>
 </template>
 
 <script>
-import { auth } from '../plugins/firebase'
+import { auth } from "../plugins/firebase";
 
 export default {
-  data () {
+  data() {
     return {
       clipped: false,
       drawer: false,
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
+          icon: "mdi-apps",
+          title: "Welcome",
+          to: "/",
         },
         {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        }
+          icon: "mdi-chart-bubble",
+          title: "Inspire",
+          to: "/inspire",
+        },
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: 'MADACA'
-    }
+      title: "MADACA",
+    };
   },
   computed: {
-    isLogin () {
-      return this.$store.getters.isLogin
-    }
+    isLogin() {
+      return this.$store.getters.isLogin;
+    },
   },
-  mounted () {
+  mounted() {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.$store.commit('setLogin', true)
+        this.$store.commit("setLogin", true);
       } else {
-        this.$store.commit('setLogin', false)
+        this.$store.commit("setLogin", false);
       }
-    })
+    });
   },
   methods: {
-    logout () {
-      auth.signOut()
-    }
-  }
-}
+    logout() {
+      auth.signOut();
+    },
+  },
+};
 </script>
+
+<style>
+.bg {
+  width: 100%;
+  height: 0;
+  background-image: url("~@/assets/background.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+</style>

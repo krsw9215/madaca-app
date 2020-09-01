@@ -1,13 +1,33 @@
 <template>
   <v-layout column justify-center align-center>
     <v-flex>
-      <div v-if="isRegisterd">
-        <H3>あなたの駅：{{stationName}}</H3>
-        <br />
+      <div class="mt-5">
+        <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
       </div>
-      <div v-if="isRegisterd">
+      <div class="text-center mt-10">
+        <p>
+          <v-btn width="200px" @click="ukkariTouch">うっかりタッチ</v-btn>
+        </p>
+      </div>
+      <div class="text-center mt-10">
+        <p>
+          <v-btn width="200px" @click="routeMap">ろせんず</v-btn>
+        </p>
+      </div>
+      <div class="text-center mt-10">
+        <p>
+          <v-btn width="200px" @click="story">ストーリー</v-btn>
+        </p>
+      </div>
+      <div class="text-center mt-10">
+        <p>
+          <v-btn width="200px" @click="howto">つかいかた</v-btn>
+        </p>
+      </div>
+      <div v-if="isRegisterd" class="text-center mt-10">
         <v-btn text v-on:click="addStation">テスト</v-btn>
       </div>
+
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
@@ -87,6 +107,18 @@ export default {
           });
       }
     },
+    ukkariTouch () {
+      this.$router.push('/ukkaritouch')
+    },
+    routeMap () {
+      this.$router.push('/routemap')
+    },
+    story () {
+      this.$router.push('/story')
+    },
+    howto () {
+      this.$router.push('/howto')
+    },
     addStation() {
       this.isLoading = true;
       const app = this;
@@ -102,7 +134,7 @@ export default {
               .then((doc) => {
                 app.isLoading = false;
                 let newStationName = doc.data().stationName;
-                alert("駅を獲得しました！:" + newStationName + '駅');
+                alert("駅を獲得しました！:" + newStationName + "駅");
               })
               .catch((error) => {
                 app.isLoading = false;

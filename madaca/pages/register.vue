@@ -1,28 +1,45 @@
 <template>
   <v-layout column justify-center align-center>
     <v-flex>
-      <div class="text-center">
-        <p></p>
-        <H2>MADACA 登録</H2>
-        <p></p>
+      <div class="mt-5">
+        <v-img width="300px" :src="require('@/assets/madaca_logo.png')" ></v-img>
       </div>
-
-      <v-card>
-        <v-card-title>自分の駅を作ろう！</v-card-title>
+      <div class="text-center mt-1">
+        <H2>登録</H2>
+      </div>
+      <v-card class="mt-3">
+        <v-card-title>あなたのえきをつくる</v-card-title>
         <v-card-text>
           <v-form ref="name_form">
             <v-text-field
+              class="mt-2"
               v-model="stationName"
-              label="駅名を入力"
-              :rules="[required, limit_length]"
+              label="えきのなまえ"
+              :rules="[required, limit_name_length]"
               counter="10"
-            ></v-text-field>
+            ></v-text-field>駅
+            <v-text-field
+              class="mt-1"
+              v-model="stationYomi"
+              label="えきのふりがな"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>えき
             <v-text-field
               v-model="userName"
-              label="お名前(駅長)"
-              :rules="[required, limit_length]"
+              class="mt-1"
+              label="えきちょう"
+              :rules="[required, limit_name_length]"
               counter="10"
             ></v-text-field>
+            <v-textarea
+              class="mt-1"
+              v-model="aboutStation"
+              label="えきについて"
+              :rules="[required, limit_about_length]"
+              placeholder="えきのとくちょうなど"
+              counter="100"
+            ></v-textarea>
           </v-form>
         </v-card-text>
         <v-divider></v-divider>
@@ -42,17 +59,28 @@
 import { auth } from "../plugins/firebase";
 import { firestore } from "../plugins/firebase";
 
+function hiraToKana(str) {
+  return str.replace(/[\u3041-\u3096]/g, function (match) {
+    var chr = match.charCodeAt(0) + 0x60;
+    return String.fromCharCode(chr);
+  });
+}
+
 export default {
   name: "register",
   data() {
     return {
       isLoading: false,
       stationName: "",
+      stationYomi: "",
       userName: "",
+      aboutStation: "",
       errorMessage: "",
       required: (value) => !!value || "必ず入力してください",
-      limit_length: (value) =>
-        value.length <= 10 || `10文字以内で入力してください`,
+      limit_name_length: (value) =>
+        value.length <= 10 || "10文字以内で入力してください",
+      limit_about_length: (value) =>
+        value.length <= 100 || "100文字以内で入力してください",
     };
   },
   mounted() {
@@ -65,9 +93,10 @@ export default {
         if (user) {
           this.isLoading = true;
           const app = this;
+          const kana = hiraToKana(app.stationYomi);
           firestore
             .collection("Stations")
-            .where("stationName", "==", app.stationName)
+            .where("stationYomi", "==", kana)
             .get()
             .then((snapshot) => {
               if (snapshot.empty) {
@@ -76,7 +105,9 @@ export default {
                   .collection("Stations")
                   .add({
                     stationName: app.stationName,
+                    stationYomi: kana,
                     userName: app.userName,
+                    aboutStation: app.aboutStation,
                     stationLevel: 1,
                   })
                   .then((station) => {
@@ -91,7 +122,7 @@ export default {
                       .then(() => {
                         app.isLoading = false;
                         alert(
-                          "駅が作成されました！\nうっかりタッチで駅を集めよう！"
+                          "えきができました！\nうっかりタッチでえきをあつめよう！"
                         );
                         app.$router.replace("/");
                       })
@@ -99,19 +130,21 @@ export default {
                         app.isLoading = false;
                         console.error("Error getting document:", error);
                         alert(
-                          "何かのエラーです！\nもう一度試してみてください。"
+                          "なにかのエラーです！\nもういっかいためしてみてください。"
                         );
                       });
                   })
                   .catch((error) => {
                     app.isLoading = false;
                     console.error("Error getting document:", error);
-                    alert("何かのエラーです！\nもう一度試してみてください。");
+                    alert(
+                      "なにかのエラーです！\nもういっかいためしてみてください。"
+                    );
                   });
               } else {
                 app.isLoading = false;
                 alert(
-                  "同名の駅がもうありました。。\n別の名前をつけてください。"
+                  "おなじなまえのえきがもうありました。。\nちがうなまえをつけてください。"
                 );
                 app.stationName = "";
               }
@@ -119,7 +152,7 @@ export default {
             .catch((error) => {
               app.isLoading = false;
               console.error("Error getting document:", error);
-              alert("何かのエラーです！\nもう一度試してみてください。");
+              alert("なにかのエラーです！\nもういっかいためしてみてください。");
             });
         }
       }
