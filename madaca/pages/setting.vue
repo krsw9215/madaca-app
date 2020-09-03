@@ -2,14 +2,9 @@
   <div class="bg-img">
     <v-layout column justify-center align-center>
       <v-flex>
-        <div class="mt-5">
-          <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
-        </div>
-        <div class="text-center mt-1">
-          <H2>登録</H2>
-        </div>
         <v-card width="300" class="mt-3">
-          <v-card-title>あなたのえきをつくる</v-card-title>
+          <v-card-title>えきを編集</v-card-title>
+          <v-divider class="mx-3"></v-divider>
           <v-card-text>
             <v-form ref="name_form">
               <v-text-field
@@ -45,10 +40,10 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn text v-on:click="registerName">登録する</v-btn>
+            <v-btn text v-on:click="updateName">更新する</v-btn>
           </v-card-actions>
         </v-card>
-
+        <v-btn class="mt-8" @click="logout">ログアウト</v-btn>
         <v-overlay :value="isLoading">
           <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
@@ -69,15 +64,18 @@ function hiraToKana(str) {
 }
 
 export default {
-  name: "register",
+  name: "setting",
   data() {
     return {
       isLoading: false,
       stationName: "",
       stationYomi: "",
       userName: "",
+      userNameOrg: "",
       aboutStation: "",
       errorMessage: "",
+      userId: "",
+      stationId: "",
       required: (value) => !!value || "必ず入力してください",
       limit_name_length: (value) =>
         value.length <= 10 || "10文字以内で入力してください",
@@ -86,10 +84,45 @@ export default {
     };
   },
   mounted() {
-    this.isLoading = false;
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        this.userId = user.uid;
+        firestore
+          .collection("Users")
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              this.nameCheck(doc.data());
+            }
+          })
+          .catch((error) => {
+            console.error("Error getting document:", error);
+          });
+      }
+    });
   },
   methods: {
-    registerName() {
+    nameCheck(userDoc) {
+      this.userName = userDoc.userName;
+      this.userNameOrg = this.userName;
+      this.stationId = userDoc.stationId;
+
+      const app = this;
+      firestore
+        .collection("Stations")
+        .doc(userDoc.stationId)
+        .get()
+        .then((doc) => {
+          app.stationName = doc.data().stationName;
+          app.stationYomi = doc.data().stationYomi;
+          app.aboutStation = doc.data().aboutStation;
+        })
+        .catch((error) => {
+          console.error("Error writing document: ", error);
+        });
+    },
+    updateName() {
       if (this.$refs.name_form.validate()) {
         const user = auth.currentUser;
         if (user) {
@@ -101,46 +134,51 @@ export default {
             .where("stationYomi", "==", kana)
             .get()
             .then((snapshot) => {
-              if (snapshot.empty) {
-                // 新しい駅を作成
+              if (snapshot.empty || snapshot.docs[0].id === this.stationId) {
+                // 駅を更新
                 firestore
                   .collection("Stations")
-                  .add({
+                  .doc(this.stationId)
+                  .update({
                     stationName: app.stationName,
                     stationYomi: kana,
                     userName: app.userName,
                     aboutStation: app.aboutStation,
-                    stationLevel: 1,
                   })
-                  .then((station) => {
+                  .then(() => {
                     // ユーザーを設定
-                    firestore
-                      .collection("Users")
-                      .doc(user.uid)
-                      .set({
-                        stationId: station.id,
-                        userName: app.userName,
-                      })
-                      .then(() => {
-                        app.isLoading = false;
-                        alert(
-                          "えきができました！\nうっかりタッチでえきをあつめよう！"
-                        );
-                        app.$router.replace("/");
-                      })
-                      .catch((error) => {
-                        app.isLoading = false;
-                        console.error("Error getting document:", error);
-                        alert(
-                          "なにかのエラーです！\nもういっかいためしてみてください。"
-                        );
-                      });
+                    if (app.userNameOrg !== app.userName) {
+                      firestore
+                        .collection("Users")
+                        .doc(user.uid)
+                        .update({
+                          userName: app.userName,
+                        })
+                        .then(() => {
+                          app.isLoading = false;
+                          alert("保存しました！");
+                          app.$router.replace("/");
+                        })
+                        .catch((error) => {
+                          app.isLoading = false;
+                          console.error("Error getting document:", error);
+                          alert(
+                            "エラーです！\nもういっかいためしてみてください。\n\n" +
+                              error
+                          );
+                        });
+                    } else {
+                      app.isLoading = false;
+                      alert("保存しました！");
+                      app.$router.replace("/");
+                    }
                   })
                   .catch((error) => {
                     app.isLoading = false;
                     console.error("Error getting document:", error);
                     alert(
-                      "なにかのエラーです！\nもういっかいためしてみてください。"
+                      "エラーです！\nもういっかいためしてみてください。\n\n" +
+                        error
                     );
                   });
               } else {
@@ -154,10 +192,15 @@ export default {
             .catch((error) => {
               app.isLoading = false;
               console.error("Error getting document:", error);
-              alert("なにかのエラーです！\nもういっかいためしてみてください。");
+              alert(
+                "エラーです！\nもういっかいためしてみてください。\n\n" + error
+              );
             });
         }
       }
+    },
+    logout() {
+      auth.signOut();
     },
   },
 };

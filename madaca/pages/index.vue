@@ -1,6 +1,6 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex>
+  <div class="bg-img">
+    <v-layout column justify-center align-center>
       <div class="mt-5">
         <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
       </div>
@@ -24,15 +24,19 @@
           <v-btn width="200px" @click="howto">つかいかた</v-btn>
         </p>
       </div>
+      <div class="text-center mt-10">
+        <p>
+          <v-btn width="200px" @click="setting">せってい</v-btn>
+        </p>
+      </div>
       <div v-if="isRegisterd" class="text-center mt-10">
         <v-btn text v-on:click="addStation">テスト</v-btn>
       </div>
-
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
-    </v-flex>
-  </v-layout>
+    </v-layout>
+  </div>
 </template>
 
 <script>
@@ -107,17 +111,20 @@ export default {
           });
       }
     },
-    ukkariTouch () {
-      this.$router.push('/ukkaritouch')
+    ukkariTouch() {
+      this.$router.push("/ukkaritouch");
     },
-    routeMap () {
-      this.$router.push('/routemap')
+    routeMap() {
+      this.$router.push("/routemap");
     },
-    story () {
-      this.$router.push('/story')
+    story() {
+      this.$router.push("/story");
     },
-    howto () {
-      this.$router.push('/howto')
+    howto() {
+      this.$router.push("/howto");
+    },
+    setting() {
+      this.$router.push("/setting");
     },
     addStation() {
       this.isLoading = true;
@@ -153,3 +160,14 @@ export default {
   },
 };
 </script>
+
+<style>
+.bg-img {
+  width: 100%;
+  height: 100%;
+  background-image: url("~@/assets/background.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
+</style>

@@ -1,7 +1,6 @@
 <template>
-  <v-app>
-    <v-main class="bg">
-      <v-btn v-if="isLogin" @click="logout">ログアウト</v-btn>
+  <v-app class="bg">
+    <v-main>
       <v-container>
         <nuxt />
       </v-container>
@@ -50,21 +49,15 @@ export default {
       }
     });
   },
-  methods: {
-    logout() {
-      auth.signOut();
-    },
-  },
 };
 </script>
 
 <style>
 .bg {
-  width: 100%;
   height: 0;
-  background-image: url("~@/assets/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+}
+.container {
+  max-width: 100vw;
+  padding: 0px;
 }
 </style>

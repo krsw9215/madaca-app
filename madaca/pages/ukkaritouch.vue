@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <q-page class="container scene" padding>
     <div class="arjs-loader">
-     <div>Loading, please wait...</div>
+      <div>読み込み中...</div>
     </div>
     <a-scene
       vr-mode-ui="enabled: false;"
@@ -9,6 +9,7 @@
       embedded
       arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
     >
+      <!-- we use cors proxy to avoid cross-origin problems -->
       <a-nft
         type="nft"
         url="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/trex-image/trex"
@@ -16,17 +17,16 @@
         smoothCount="10"
         smoothTolerance=".01"
         smoothThreshold="5"
-       >
+      >
         <a-entity
           gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
           scale="5 5 5"
           position="50 150 0"
-        >
-        </a-entity>
+        ></a-entity>
       </a-nft>
       <a-entity camera></a-entity>
     </a-scene>
-  </div>
+  </q-page>
 </template>
 
 <style>
@@ -47,5 +47,20 @@
   text-align: center;
   font-size: 1.25em;
   color: white;
+}
+
+body >>> .ar {
+  overflow: hidden;
+  margin: 0px;
+}
+.scene {
+  z-index: 100 !important;
+}
+a-scene {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 </style>
