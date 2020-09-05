@@ -1,4 +1,4 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/lib/util/colors'
 import path from 'path'
 import fs from 'fs'
 
@@ -21,10 +21,10 @@ export default {
     script: [
       { src: 'https://aframe.io/releases/1.0.4/aframe.min.js' },
       { src: 'https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js' }
-    ]
+    ],
   },
   server: {
-    port: 8000, 
+    port: 8000,
     host: '0.0.0.0',
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'cert/localhost.key')),
@@ -64,6 +64,17 @@ export default {
     ['cookie-universal-nuxt', { alias: 'cookiz', parseJSON: false }],
     '@nuxtjs/axios'
   ],
+  vue: {
+    config: {
+      ignoredElements: [
+        'a-scene',
+        'a-assets',
+        'a-camera',
+        'a-entity',
+        'a-nft',
+      ]
+    }
+  },
   /*
   ** Axios module configuration
   ** See https://axios.nuxtjs.org/options
@@ -74,13 +85,13 @@ export default {
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
   */
-   vuetify: {
+  vuetify: {
     customVariables: ['~/assets/variables.scss'],
-    options: {
-      customProperties: true
-    },
-    dark: false,
     theme: {
+      dark: false,
+      options: {
+        customProperties: true
+      },
       themes: {
         light: {
           background: '#eeeef0'
@@ -95,7 +106,7 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
     }
   }
 }

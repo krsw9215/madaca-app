@@ -1,10 +1,10 @@
 <template>
-  <div class="bg-img">
-    <v-layout column justify-center align-center>
-      <v-flex xs12 sm8 md6>
-        <div class="mt-5">
-          <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
-        </div>
+  <v-layout column justify-center align-center>
+    <v-flex xs12 sm8 md6>
+      <div class="mt-5">
+        <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
+      </div>
+      <div v-if="!isLoading">
         <div class="text-center mt-1">
           <H2>ログイン</H2>
         </div>
@@ -22,13 +22,13 @@
             </v-btn>
           </p>
         </div>
-        <v-overlay :value="isLoading">
-          <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
-        <v-snackbar v-model="emailSent" color="success" top>メールを送信しました。受信したメールのリンクからログインしてください。</v-snackbar>
-      </v-flex>
-    </v-layout>
-  </div>
+      </div>
+      <v-overlay :value="isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
+      <v-snackbar v-model="emailSent" color="success" top>メールを送信しました。受信したメールのリンクからログインしてください。</v-snackbar>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -44,7 +44,7 @@ export default {
       mdiGoogle,
       mdiEmail,
       emailSent: false,
-      isLoading: false,
+      isLoading: true,
     };
   },
   mounted() {
@@ -52,6 +52,9 @@ export default {
 
     if (auth.isSignInWithEmailLink(window.location.href)) {
       const email = this.$cookiz.get("email");
+      if (!email) {
+        email = window.prompt("登録に使用したメールアドレスを入力してください");
+      }
       if (email) {
         auth.signInWithEmailLink(email, window.location.href);
         this.$cookiz.set("email", null);
@@ -59,9 +62,10 @@ export default {
     }
 
     auth.onAuthStateChanged((user) => {
-      this.isLoading = false;
       if (user) {
         this.$router.replace("/");
+      } else {
+        this.isLoading = false;
       }
     });
   },
@@ -96,14 +100,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.bg-img {
-  width: 100%;
-  height: 100%;
-  background-image: url("~@/assets/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
-</style>

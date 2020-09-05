@@ -1,14 +1,14 @@
 <template>
-  <div class="bg-img">
-    <v-layout column justify-center align-center>
-      <v-flex>
-        <div class="mt-5">
+  <v-layout column justify-center align-center>
+    <v-flex>
+      <div class="mt-5 mb-10 pl-5 pr-5">
+        <div class="mt-1">
           <v-img width="300px" :src="require('@/assets/kyojima.jpg')"></v-img>
         </div>
-        <div class="mt-10 pl-5 pr-5">
+        <div class="mt-5">
           <h3>私鉄 京島環状線の成り立ち</h3>
           <p>
-            京島のまちに小規模な鉄道が誕生したのが昭和 95 年（2021 年）。
+            京島のまちに小規模な鉄道が誕生したのが昭和 95 年（2020 年）。
             <br />地元の有志と後援者が資金繰りをして企業がバックにいない鉄道ができる。
             <br />西武や小田急や東部、京王などの企業がついている私鉄とは違い、
             京島のまちの個人経営の店舗の組合いよる私鉄。そのため、
@@ -50,18 +50,7 @@
             </li>
           </ul>
         </div>
-      </v-flex>
-    </v-layout>
-  </div>
+      </div>
+    </v-flex>
+  </v-layout>
 </template>
-
-<style>
-.bg-img {
-  width: 100%;
-  height: 100%;
-  background-image: url("~@/assets/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
-</style>

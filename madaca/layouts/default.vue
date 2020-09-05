@@ -1,5 +1,5 @@
 <template>
-  <v-app class="bg">
+  <v-app>
     <v-main>
       <v-container>
         <nuxt />
@@ -53,11 +53,14 @@ export default {
 </script>
 
 <style>
-.bg {
-  height: 0;
-}
 .container {
   max-width: 100vw;
   padding: 0px;
+}
+.v-main {
+  background-image: url("~@/assets/background.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 </style>

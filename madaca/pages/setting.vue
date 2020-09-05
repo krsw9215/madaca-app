@@ -1,55 +1,53 @@
 <template>
-  <div class="bg-img">
-    <v-layout column justify-center align-center>
-      <v-flex>
-        <v-card width="300" class="mt-3">
-          <v-card-title>えきを編集</v-card-title>
-          <v-divider class="mx-3"></v-divider>
-          <v-card-text>
-            <v-form ref="name_form">
-              <v-text-field
-                class="mt-2"
-                v-model="stationName"
-                label="えきのなまえ"
-                :rules="[required, limit_name_length]"
-                counter="10"
-              ></v-text-field>駅
-              <v-text-field
-                class="mt-1"
-                v-model="stationYomi"
-                label="えきのふりがな"
-                :rules="[required, limit_name_length]"
-                counter="10"
-              ></v-text-field>えき
-              <v-text-field
-                v-model="userName"
-                class="mt-1"
-                label="えきちょう"
-                :rules="[required, limit_name_length]"
-                counter="10"
-              ></v-text-field>
-              <v-textarea
-                class="mt-1"
-                v-model="aboutStation"
-                label="えきについて"
-                :rules="[required, limit_about_length]"
-                placeholder="えきのとくちょうなど"
-                counter="100"
-              ></v-textarea>
-            </v-form>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-btn text v-on:click="updateName">更新する</v-btn>
-          </v-card-actions>
-        </v-card>
-        <v-btn class="mt-8" @click="logout">ログアウト</v-btn>
-        <v-overlay :value="isLoading">
-          <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
-      </v-flex>
-    </v-layout>
-  </div>
+  <v-layout column justify-center align-center>
+    <v-flex>
+      <v-card width="300" class="mt-3">
+        <v-card-title>えきを編集</v-card-title>
+        <v-divider class="mx-3"></v-divider>
+        <v-card-text>
+          <v-form ref="name_form">
+            <v-text-field
+              class="mt-2"
+              v-model="stationName"
+              label="えきのなまえ"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>駅
+            <v-text-field
+              class="mt-1"
+              v-model="stationYomi"
+              label="えきのふりがな"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>えき
+            <v-text-field
+              v-model="userName"
+              class="mt-1"
+              label="えきちょう"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>
+            <v-textarea
+              class="mt-1"
+              v-model="aboutStation"
+              label="えきについて"
+              :rules="[required, limit_about_length]"
+              placeholder="えきのとくちょうなど"
+              counter="100"
+            ></v-textarea>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn text v-on:click="updateName">更新する</v-btn>
+        </v-card-actions>
+      </v-card>
+      <v-btn class="mt-8" @click="logout">ログアウト</v-btn>
+      <v-overlay :value="isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -205,14 +203,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.bg-img {
-  width: 100%;
-  height: 100%;
-  background-image: url("~@/assets/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
-</style>

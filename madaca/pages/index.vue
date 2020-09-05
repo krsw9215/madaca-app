@@ -1,12 +1,12 @@
 <template>
-  <div class="bg-img">
-    <v-layout column justify-center align-center>
+  <v-layout column justify-center align-center>
+    <v-flex xs12 sm8 md6>
       <div class="mt-5">
         <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
       </div>
       <div class="text-center mt-10">
         <p>
-          <v-btn width="200px" @click="ukkariTouch">うっかりタッチ</v-btn>
+          <v-btn width="200px" @click.stop="showUkkariTouch=true">うっかりタッチ</v-btn>
         </p>
       </div>
       <div class="text-center mt-10">
@@ -35,14 +35,16 @@
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
-    </v-layout>
-  </div>
+      <UkkariTouch :visible="showUkkariTouch" @close="showUkkariTouch=false" />
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
 import { auth } from "../plugins/firebase";
 import { firestore } from "../plugins/firebase";
 import { functions } from "../plugins/firebase";
+import UkkariTouch from "~/components/ukkariTouch";
 
 export default {
   name: "HomePage",
@@ -52,6 +54,7 @@ export default {
       isRegisterd: false,
       stationName: "",
       userName: "",
+      showUkkariTouch: false,
     };
   },
   mounted() {
@@ -73,6 +76,9 @@ export default {
           });
       }
     });
+  },
+  components: {
+    UkkariTouch,
   },
   methods: {
     createUser(user) {
@@ -110,9 +116,6 @@ export default {
             console.error("Error writing document: ", error);
           });
       }
-    },
-    ukkariTouch() {
-      this.$router.push("/ukkaritouch");
     },
     routeMap() {
       this.$router.push("/routemap");
@@ -160,14 +163,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.bg-img {
-  width: 100%;
-  height: 100%;
-  background-image: url("~@/assets/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
-</style>

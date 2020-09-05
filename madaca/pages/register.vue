@@ -1,60 +1,58 @@
 <template>
-  <div class="bg-img">
-    <v-layout column justify-center align-center>
-      <v-flex>
-        <div class="mt-5">
-          <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
-        </div>
-        <div class="text-center mt-1">
-          <H2>登録</H2>
-        </div>
-        <v-card width="300" class="mt-3">
-          <v-card-title>あなたのえきをつくる</v-card-title>
-          <v-card-text>
-            <v-form ref="name_form">
-              <v-text-field
-                class="mt-2"
-                v-model="stationName"
-                label="えきのなまえ"
-                :rules="[required, limit_name_length]"
-                counter="10"
-              ></v-text-field>駅
-              <v-text-field
-                class="mt-1"
-                v-model="stationYomi"
-                label="えきのふりがな"
-                :rules="[required, limit_name_length]"
-                counter="10"
-              ></v-text-field>えき
-              <v-text-field
-                v-model="userName"
-                class="mt-1"
-                label="えきちょう"
-                :rules="[required, limit_name_length]"
-                counter="10"
-              ></v-text-field>
-              <v-textarea
-                class="mt-1"
-                v-model="aboutStation"
-                label="えきについて"
-                :rules="[required, limit_about_length]"
-                placeholder="えきのとくちょうなど"
-                counter="100"
-              ></v-textarea>
-            </v-form>
-          </v-card-text>
-          <v-divider></v-divider>
-          <v-card-actions>
-            <v-btn text v-on:click="registerName">登録する</v-btn>
-          </v-card-actions>
-        </v-card>
+  <v-layout column justify-center align-center>
+    <v-flex>
+      <div class="mt-5">
+        <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
+      </div>
+      <div class="text-center mt-1">
+        <H2>登録</H2>
+      </div>
+      <v-card width="300" class="mt-3">
+        <v-card-title>あなたのえきをつくる</v-card-title>
+        <v-card-text>
+          <v-form ref="name_form">
+            <v-text-field
+              class="mt-2"
+              v-model="stationName"
+              label="えきのなまえ"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>駅
+            <v-text-field
+              class="mt-1"
+              v-model="stationYomi"
+              label="えきのふりがな"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>えき
+            <v-text-field
+              v-model="userName"
+              class="mt-1"
+              label="えきちょう"
+              :rules="[required, limit_name_length]"
+              counter="10"
+            ></v-text-field>
+            <v-textarea
+              class="mt-1"
+              v-model="aboutStation"
+              label="えきについて"
+              :rules="[required, limit_about_length]"
+              placeholder="えきのとくちょうなど"
+              counter="100"
+            ></v-textarea>
+          </v-form>
+        </v-card-text>
+        <v-divider></v-divider>
+        <v-card-actions>
+          <v-btn text v-on:click="registerName">登録する</v-btn>
+        </v-card-actions>
+      </v-card>
 
-        <v-overlay :value="isLoading">
-          <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
-      </v-flex>
-    </v-layout>
-  </div>
+      <v-overlay :value="isLoading">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
@@ -162,14 +160,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.bg-img {
-  width: 100%;
-  height: 100%;
-  background-image: url("~@/assets/background.jpg");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-}
-</style>
