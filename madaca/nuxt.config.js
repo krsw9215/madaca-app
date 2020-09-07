@@ -19,8 +19,8 @@ export default {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ],
     script: [
-      { src: 'https://aframe.io/releases/1.0.4/aframe.min.js' },
-      { src: 'https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js' }
+      { src: 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r120/three.min.js' },
+      { src: 'https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-nft.js' },
     ],
   },
   server: {
@@ -107,6 +107,9 @@ export default {
     ** You can extend webpack config here
     */
     extend(config, ctx) {
+      if (!!config.module) {
+        config.module.rules.push({ test: /\.(vert|frag)$/i, use: ["raw-loader"] });
+      }
     }
   }
 }

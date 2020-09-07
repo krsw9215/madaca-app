@@ -35,7 +35,7 @@
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
-      <UkkariTouch :visible="showUkkariTouch" @close="showUkkariTouch=false" />
+      <ArTest :visible="showUkkariTouch" @close="showUkkariTouch=false" />
     </v-flex>
   </v-layout>
 </template>
@@ -45,6 +45,7 @@ import { auth } from "../plugins/firebase";
 import { firestore } from "../plugins/firebase";
 import { functions } from "../plugins/firebase";
 import UkkariTouch from "~/components/ukkariTouch";
+import ArTest from "~/components/artest";
 
 export default {
   name: "HomePage",
@@ -79,6 +80,7 @@ export default {
   },
   components: {
     UkkariTouch,
+    ArTest
   },
   methods: {
     createUser(user) {

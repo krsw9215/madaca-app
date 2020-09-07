@@ -10,12 +10,12 @@
       vr-mode-ui="enabled: false;"
       renderer="logarithmicDepthBuffer: true;"
       embedded
-      arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
     >
       <a-nft
         type="nft"
         markerhandler
-        url="ukkaritouch"
+        url="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/trex-image/trex"
         smooth="true"
         smoothCount="10"
         smoothTolerance=".01"
@@ -116,7 +116,7 @@ export default {
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.8);
-  z-index: 9999;
+  z-index: 9999 !important;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -127,12 +127,11 @@ export default {
   color: white;
 }
 #arjs-video {
-  top: 80px !important;
   z-index: 999 !important;
 }
 .close-bar {
   position: fixed;
-  height: 80px;
+  height: 10%;
   width: 100%;
   top: 0;
   background-color: rgba(0, 0, 0, 0.3);
