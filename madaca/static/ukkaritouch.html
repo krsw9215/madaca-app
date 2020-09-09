@@ -57,7 +57,7 @@
       m.addEventListener("markerFound", (e) => {
         console.log("found");
         app.markerFound = true;
-        app.timer = setTimeout(app.addStation, 2000);
+        app.timer = setTimeout(app.cmanPosGet, 2000);
       });
       m.addEventListener("markerLost", (e) => {
         console.log("found");
@@ -68,13 +68,14 @@
       });
     };
 
-    function addStation() {
+    function addStation(latitude, longitude) {
       const func = firebase.functions().httpsCallable("addStation");
-      func()
+      func({ latitude: latitude, longitude: longitude })
         .then((res) => {
           let station_id = res.data.station_id;
           if (station_id) {
-            firebase.firestore()
+            firebase
+              .firestore()
               .collection("Stations")
               .doc(station_id)
               .get()
@@ -99,6 +100,44 @@
           console.log(e);
           alert("エラーです:" + e);
         });
+    }
+    function cmanPosGet() {
+      if (typeof navigator.geolocation === "undefined") {
+        alert("ブラウザが位置情報取得に対応していません");
+        return false;
+      }
+      var wOptions = {
+        enableHighAccuracy: true, // true : 高精度
+        timeout: 10000, // タイムアウト : ミリ秒
+        maximumAge: 0, // データをキャッシュ時間 : ミリ秒
+      };
+      navigator.geolocation.getCurrentPosition(
+        cmanGetOk, // 位置取得成功時に実行される関数
+        cmanGetErr, // 位置取得失敗時に実行される関数
+        wOptions
+      );
+      return true;
+    }
+    function cmanGetOk(argPos) {
+      app.addStation(argPos.coords.latitude, argPos.coords.longitude);
+    }
+    function cmanGetErr(argErr) {
+      var wErrMsg = "";
+      switch (argErr.code) {
+        case 1:
+          wErrMsg = "位置情報の利用が許可されていません";
+          break;
+        case 2:
+          wErrMsg = "デバイスの位置が判定できません";
+          break;
+        case 3:
+          wErrMsg = "タイムアウトしました";
+          break;
+      }
+      if (wErrMsg == "") {
+        wErrMsg = argErr.message;
+      }
+      alert(wErrMsg);
     }
   </script>
 

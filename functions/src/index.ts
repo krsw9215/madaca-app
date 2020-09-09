@@ -1,16 +1,32 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { Timestamp } from '@google-cloud/firestore';
+import * as moment from "moment-timezone";
 
 admin.initializeApp();
+moment.locale("ja");
+moment.tz.setDefault("Asia/Tokyo");
 
 const runtimeOpts = { timeoutSeconds: 300 };
 functions.runWith(runtimeOpts);
+
+const geo = require('geofirex').init(admin);
 
 export const addStation = functions.https.onCall((data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError(
       "failed-precondition",
       "The function must be called " + "while authenticated."
+    );
+  }
+
+  const latitude = data.latitude;
+  const longitude = data.longitude;
+
+  if (!latitude || !longitude) {
+    throw new functions.https.HttpsError(
+      "failed-precondition",
+      "latitude and longitude required."
     );
   }
 
@@ -34,7 +50,11 @@ export const addStation = functions.https.onCall((data, context) => {
               .firestore()
               .collection("Users")
               .doc(uid)
-              .update({ stations: stations })
+              .update({
+                stations: stations,
+                update_date: Timestamp.now(),
+                geography: geo.point(latitude, longitude),
+              })
               .then(() => {
                 return { station_id: station_id };
               })
