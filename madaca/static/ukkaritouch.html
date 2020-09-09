@@ -1,0 +1,159 @@
+<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+<script src="https://unpkg.com/aframe-spe-particles-component@^1.0.4/dist/aframe-spe-particles-component.min.js"></script>
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-functions.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.2.0/firebase-firestore.js"></script>
+
+<style>
+  .arjs-loader {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .arjs-loader div {
+    text-align: center;
+    font-size: 1.25em;
+    color: white;
+  }
+</style>
+
+<body style="margin: 0px; overflow: hidden">
+  <script>
+    var firebaseConfig = {
+      apiKey: "AIzaSyDd7I-b7Dx5rR9nt4mbivh5zAc8Yj3rCC8",
+      authDomain: "madaca-app.firebaseapp.com",
+      databaseURL: "https://madaca-app.firebaseio.com",
+      projectId: "madaca-app",
+      storageBucket: "madaca-app.appspot.com",
+      messagingSenderId: "37648714015",
+      appId: "1:37648714015:web:e07846e66de01cba02c82a",
+      measurementId: "G-ER0T96DZDW",
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = "/";
+      }
+    });
+
+    const app = this;
+
+    var markerFound = false;
+    var timer = null;
+
+    window.onload = function () {
+      var m = document.querySelector("#ukkaritouch-marker");
+      m.addEventListener("markerFound", (e) => {
+        console.log("found");
+        app.markerFound = true;
+        app.timer = setTimeout(app.addStation, 2000);
+      });
+      m.addEventListener("markerLost", (e) => {
+        console.log("found");
+        app.markerFound = false;
+      });
+      document.querySelector("#back-button").addEventListener("click", (e) => {
+        window.location.href = "/";
+      });
+    };
+
+    function addStation() {
+      const func = firebase.functions().httpsCallable("addStation");
+      func()
+        .then((res) => {
+          let station_id = res.data.station_id;
+          if (station_id) {
+            firebase.firestore()
+              .collection("Stations")
+              .doc(station_id)
+              .get()
+              .then((doc) => {
+                app.isLoading = false;
+                let newStationName = doc.data().stationName;
+                alert("駅を獲得しました！:" + newStationName + "駅");
+                window.location.href = "/";
+              })
+              .catch((error) => {
+                app.isLoading = false;
+                console.error("Error writing document: ", error);
+                alert("エラーです:" + error);
+              });
+          } else {
+            app.isLoading = false;
+            console.log(res.data);
+          }
+        })
+        .catch((e) => {
+          app.isLoading = false;
+          console.log(e);
+          alert("エラーです:" + e);
+        });
+    }
+  </script>
+
+  <div
+    style="
+      position: fixed;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      z-index: 1;
+    "
+  >
+    <button
+      style="width: 90%; height: 10%; padding: 10px; font-size: 20px"
+      id="back-button"
+    >
+      戻る
+    </button>
+  </div>
+  <div class="arjs-loader">
+    <div>読み込み中...</div>
+  </div>
+  <a-scene
+    vr-mode-ui="enabled: false;"
+    renderer="logarithmicDepthBuffer: true;"
+    embedded
+    arjs="trackingMethod: best; sourceType: webcam;debugUIEnabled: false;"
+  >
+    <a-assets>
+      <a-asset-item
+        id="hologramm-obj"
+        src="/hologramm/hologramm.obj"
+      ></a-asset-item>
+      <a-asset-item
+        id="hologramm-mtl"
+        src="/hologramm/hologramm.mtl"
+      ></a-asset-item>
+    </a-assets>
+    <a-nft
+      type="nft"
+      id="ukkaritouch-marker"
+      url="ukkaritouch"
+      smooth="true"
+      smoothCount="5"
+      smoothTolerance=".01"
+      smoothThreshold="2"
+    >
+      <a-obj-model
+        id="ukkaritouch-model"
+        position="200 0 -550"
+        src="#hologramm-obj"
+        mtl="#hologramm-mtl"
+        scale="15 15 15"
+      ></a-obj-model>
+    </a-nft>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>

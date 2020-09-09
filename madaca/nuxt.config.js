@@ -103,6 +103,7 @@ export default {
   ** Build configuration
   */
   build: {
+    extractCSS: true,
     /*
     ** You can extend webpack config here
     */
@@ -111,5 +112,5 @@ export default {
         config.module.rules.push({ test: /\.(vert|frag)$/i, use: ["raw-loader"] });
       }
     }
-  }
+  },
 }

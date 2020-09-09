@@ -6,7 +6,7 @@
       </div>
       <div class="text-center mt-10">
         <p>
-          <v-btn width="200px" @click.stop="showUkkariTouch=true">うっかりタッチ</v-btn>
+          <v-btn width="200px" @click="showUkkariTouch">うっかりタッチ</v-btn>
         </p>
       </div>
       <div class="text-center mt-10">
@@ -29,13 +29,9 @@
           <v-btn width="200px" @click="setting">せってい</v-btn>
         </p>
       </div>
-      <div v-if="isRegisterd" class="text-center mt-10">
-        <v-btn text v-on:click="addStation">テスト</v-btn>
-      </div>
       <v-overlay :value="isLoading">
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
-      <ArTest :visible="showUkkariTouch" @close="showUkkariTouch=false" />
     </v-flex>
   </v-layout>
 </template>
@@ -44,8 +40,6 @@
 import { auth } from "../plugins/firebase";
 import { firestore } from "../plugins/firebase";
 import { functions } from "../plugins/firebase";
-import UkkariTouch from "~/components/ukkariTouch";
-import ArTest from "~/components/artest";
 
 export default {
   name: "HomePage",
@@ -55,7 +49,6 @@ export default {
       isRegisterd: false,
       stationName: "",
       userName: "",
-      showUkkariTouch: false,
     };
   },
   mounted() {
@@ -77,10 +70,6 @@ export default {
           });
       }
     });
-  },
-  components: {
-    UkkariTouch,
-    ArTest
   },
   methods: {
     createUser(user) {
@@ -119,6 +108,9 @@ export default {
           });
       }
     },
+    showUkkariTouch() {
+      location.href = "/ukkaritouch.html";
+    },
     routeMap() {
       this.$router.push("/routemap");
     },
@@ -130,37 +122,6 @@ export default {
     },
     setting() {
       this.$router.push("/setting");
-    },
-    addStation() {
-      this.isLoading = true;
-      const app = this;
-      const func = functions.httpsCallable("addStation");
-      func()
-        .then((res) => {
-          let station_id = res.data.station_id;
-          if (station_id) {
-            firestore
-              .collection("Stations")
-              .doc(station_id)
-              .get()
-              .then((doc) => {
-                app.isLoading = false;
-                let newStationName = doc.data().stationName;
-                alert("駅を獲得しました！:" + newStationName + "駅");
-              })
-              .catch((error) => {
-                app.isLoading = false;
-                console.error("Error writing document: ", error);
-              });
-          } else {
-            app.isLoading = false;
-            console.log(res.data);
-          }
-        })
-        .catch((e) => {
-          app.isLoading = false;
-          console.log(e);
-        });
     },
   },
 };
