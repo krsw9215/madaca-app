@@ -1,34 +1,41 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <div class="mt-5">
-        <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
-      </div>
-      <div v-if="!isLoading">
-        <div class="text-center mt-1">
-          <H2>ログイン</H2>
+  <div>
+    <v-layout column justify-center align-center>
+      <v-flex xs12 sm8 md6>
+        <div class="mt-5">
+          <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
         </div>
-        <div class="text-center mt-3">
-          <p>
-            <v-btn x-large @click="loginByGoogle">
-              <v-icon>{{ mdiGoogle }}</v-icon>Googleアカウントで参加
-            </v-btn>
-          </p>
+        <div v-if="!isLoading">
+          <div class="text-center mt-1">
+            <H2>ログイン</H2>
+          </div>
+          <div class="text-center mt-3">
+            <p>
+              <v-btn x-large @click="loginByGoogle">
+                <v-icon>{{ mdiGoogle }}</v-icon>Googleアカウントで参加
+              </v-btn>
+            </p>
+          </div>
+          <div class="text-center mt-3">
+            <p>
+              <v-btn :disabled="emailSent" clas="ma-2" x-large @click="loginByEmailLink">
+                <v-icon>{{ mdiEmail }}</v-icon>メールアドレスで参加
+              </v-btn>
+            </p>
+          </div>
         </div>
-        <div class="text-center mt-3">
-          <p>
-            <v-btn :disabled="emailSent" clas="ma-2" x-large @click="loginByEmailLink">
-              <v-icon>{{ mdiEmail }}</v-icon>メールアドレスで参加
-            </v-btn>
-          </p>
-        </div>
-      </div>
-      <v-overlay :value="isLoading">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay>
-      <v-snackbar v-model="emailSent" color="success" top>メールを送信しました。受信したメールのリンクからログインしてください。</v-snackbar>
-    </v-flex>
-  </v-layout>
+        <v-overlay :value="isLoading">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+        <v-snackbar v-model="emailSent" color="success" top>メールを送信しました。受信したメールのリンクからログインしてください。</v-snackbar>
+      </v-flex>
+    </v-layout>
+    <v-footer color="transparent">
+      <v-layout class="mt-10 mb-3" justify-center align-center>
+        <v-img max-width="100" :src="require('@/assets/vrlogo.png')"></v-img>
+      </v-layout>
+    </v-footer>
+  </div>
 </template>
 
 <script>

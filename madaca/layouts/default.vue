@@ -54,8 +54,8 @@ export default {
 
 <style>
 .container {
-  max-width: 100vw;
-  padding: 0px;
+  max-width: 100vw !important;
+  padding: 0px !important;
 }
 .v-main {
   background-image: url("~@/assets/background.jpg");

@@ -8,8 +8,8 @@ export default {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s - ' + 'MADACA',
+    title: 'MADACA' || '',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"' },
@@ -41,6 +41,7 @@ export default {
   */
   plugins: [
     '~/plugins/firebase',
+    '~/plugins/v-scroll-lock',
   ],
 
   router: {

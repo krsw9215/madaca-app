@@ -1,39 +1,48 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex xs12 sm8 md6>
-      <div class="mt-5">
-        <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
-      </div>
-      <div class="text-center mt-10">
-        <p>
-          <v-btn width="200px" @click="showUkkariTouch">うっかりタッチ</v-btn>
-        </p>
-      </div>
-      <div class="text-center mt-10">
-        <p>
-          <v-btn width="200px" @click="routeMap">ろせんず</v-btn>
-        </p>
-      </div>
-      <div class="text-center mt-10">
-        <p>
-          <v-btn width="200px" @click="story">ストーリー</v-btn>
-        </p>
-      </div>
-      <div class="text-center mt-10">
-        <p>
-          <v-btn width="200px" @click="howto">つかいかた</v-btn>
-        </p>
-      </div>
-      <div class="text-center mt-10">
-        <p>
-          <v-btn width="200px" @click="setting">せってい</v-btn>
-        </p>
-      </div>
-      <v-overlay :value="isLoading">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay>
-    </v-flex>
-  </v-layout>
+  <div>
+    <v-container fluid fill-height v-scroll-lock="true">
+      <v-layout column justify-center align-center>
+        <v-flex xs12 sm8 md6>
+          <div class="mt-5">
+            <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
+          </div>
+          <div class="text-center mt-10">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="showUkkariTouch">うっかりタッチ</v-btn>
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="routeMap">ろせんず</v-btn>
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="story">ストーリー</v-btn>
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="howto">つかいかた</v-btn>
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="setting">せってい</v-btn>
+            </p>
+          </div>
+          <v-overlay :value="isLoading">
+            <v-progress-circular indeterminate size="64"></v-progress-circular>
+          </v-overlay>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    <v-footer color="transparent">
+      <v-layout class="mt-10 mb-3" justify-center align-center>
+        <v-img max-width="100" :src="require('@/assets/vrlogo.png')"></v-img>
+      </v-layout>
+    </v-footer>
+  </div>
 </template>
 
 <script>
@@ -126,3 +135,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.menueBtn .v-btn__content {
+  font-weight: 300;
+}
+</style>

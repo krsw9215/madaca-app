@@ -1,53 +1,64 @@
 <template>
-  <v-layout column justify-center align-center>
-    <v-flex>
-      <v-card width="300" class="mt-3">
-        <v-card-title>えきを編集</v-card-title>
-        <v-divider class="mx-3"></v-divider>
-        <v-card-text>
-          <v-form ref="name_form">
-            <v-text-field
-              class="mt-2"
-              v-model="stationName"
-              label="えきのなまえ"
-              :rules="[required, limit_name_length]"
-              counter="10"
-            ></v-text-field>駅
-            <v-text-field
-              class="mt-1"
-              v-model="stationYomi"
-              label="えきのふりがな"
-              :rules="[required, limit_name_length]"
-              counter="10"
-            ></v-text-field>えき
-            <v-text-field
-              v-model="userName"
-              class="mt-1"
-              label="えきちょう"
-              :rules="[required, limit_name_length]"
-              counter="10"
-            ></v-text-field>
-            <v-textarea
-              class="mt-1"
-              v-model="aboutStation"
-              label="えきについて"
-              :rules="[required, limit_about_length]"
-              placeholder="えきのとくちょうなど"
-              counter="100"
-            ></v-textarea>
-          </v-form>
-        </v-card-text>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-btn text v-on:click="updateName">更新する</v-btn>
-        </v-card-actions>
-      </v-card>
-      <v-btn class="mt-8" @click="logout">ログアウト</v-btn>
-      <v-overlay :value="isLoading">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay>
-    </v-flex>
-  </v-layout>
+  <div>
+    <v-layout column justify-center align-center>
+      <v-flex>
+        <v-card width="300" class="mt-3">
+          <v-card-title>えきを編集</v-card-title>
+          <v-divider class="mx-3"></v-divider>
+          <v-card-text>
+            <v-form ref="name_form">
+              <v-text-field
+                class="mt-2"
+                v-model="stationName"
+                label="えきのなまえ（「駅」は自動でつきます）"
+                :rules="[required, limit_name_length]"
+                outlined
+                counter="10"
+              ></v-text-field>
+              <v-text-field
+                class="mt-1"
+                v-model="stationYomi"
+                label="えきのふりがな"
+                :rules="[required, limit_name_length]"
+                counter="10"
+                outlined
+              ></v-text-field>
+              <v-text-field
+                v-model="userName"
+                class="mt-1"
+                label="えきちょう（おなまえ）"
+                outlined
+                :rules="[required, limit_name_length]"
+                counter="10"
+              ></v-text-field>
+              <v-textarea
+                class="mt-1"
+                v-model="aboutStation"
+                label="えきについて"
+                outlined
+                :rules="[required, limit_about_length]"
+                placeholder="えきのとくちょうなど"
+                counter="100"
+              ></v-textarea>
+            </v-form>
+          </v-card-text>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn text v-on:click="updateName">更新する</v-btn>
+          </v-card-actions>
+        </v-card>
+        <v-btn class="mt-8" @click="logout">ログアウト</v-btn>
+        <v-overlay :value="isLoading">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+      </v-flex>
+    </v-layout>
+    <v-footer color="transparent">
+      <v-layout class="mt-10 mb-3" justify-center align-center>
+        <v-img max-width="100" :src="require('@/assets/vrlogo.png')"></v-img>
+      </v-layout>
+    </v-footer>
+  </div>
 </template>
 
 <script>

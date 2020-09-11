@@ -88,7 +88,8 @@
               .catch((error) => {
                 app.isLoading = false;
                 console.error("Error writing document: ", error);
-                alert("エラーです:" + error);
+                alert(error.message);
+                window.location.href = "/";
               });
           } else {
             app.isLoading = false;
@@ -98,7 +99,8 @@
         .catch((e) => {
           app.isLoading = false;
           console.log(e);
-          alert("エラーです:" + e);
+          alert(e.message);
+          window.location.href = "/";
         });
     }
     function cmanPosGet() {

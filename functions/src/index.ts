@@ -30,6 +30,8 @@ export const addStation = functions.https.onCall((data, context) => {
     );
   }
 
+  const geopoint = geo.point(latitude, longitude);
+
   const uid: string = context.auth.uid;
   return admin
     .firestore()
@@ -39,6 +41,25 @@ export const addStation = functions.https.onCall((data, context) => {
     .then((doc) => {
       var docData = doc.data();
       if (docData) {
+        let prevTime = docData.update_date;
+        let prevGeo = docData.geography;
+        if (prevTime && prevGeo){
+          let nowDate = Timestamp.now().toDate();
+          let prevDate = prevTime.toDate();
+          let ms = nowDate.getTime() - prevDate.getTime();
+          let hours = Math.floor(ms / (1000*60*60));
+          if (hours < 24){
+            let distance = geo.distance(prevGeo, geopoint)
+            if (distance < 0.01){
+              let errorMes = "同じ場所で駅をゲットできるのは24時間に1回です。";
+              throw new functions.https.HttpsError(
+                "out-of-range",
+                errorMes,
+                { distance: distance, hours:hours}
+              );
+            }
+          }
+        }
         return lotteryStation()
           .then((station_id) => {
             var stations: string[] = [];
@@ -53,7 +74,7 @@ export const addStation = functions.https.onCall((data, context) => {
               .update({
                 stations: stations,
                 update_date: Timestamp.now(),
-                geography: geo.point(latitude, longitude),
+                geography: geopoint,
               })
               .then(() => {
                 return { station_id: station_id };
@@ -61,14 +82,14 @@ export const addStation = functions.https.onCall((data, context) => {
               .catch((error) => {
                 throw new functions.https.HttpsError(
                   "invalid-argument",
-                  "uid is undefined." + error
+                  "ユーザーが不明です。"
                 );
               });
           })
           .catch((error) => {
             throw new functions.https.HttpsError(
               "invalid-argument",
-              "no stations." + error
+              "駅が見つかりませんでした。"
             );
           });
       } else {
@@ -81,14 +102,14 @@ export const addStation = functions.https.onCall((data, context) => {
     .catch((error) => {
       throw new functions.https.HttpsError(
         "invalid-argument",
-        "uid is undefined." + error
+        error
       );
     });
 });
 
 async function lotteryStation() {
-  const rate = [100, 45, 30, 10, 1];
-  const random = Math.floor(Math.random() * 100);
+  const rate = [1000, 500, 100, 10, 2];
+  const random = Math.floor(Math.random() * 1000);
   for (let i = 5; i > 0; i--) {
     if (random < rate[i - 1] || i == 1) {
       const querySnapshot = await admin

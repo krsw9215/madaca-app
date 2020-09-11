@@ -1,16 +1,90 @@
 <template>
-  <v-container fluid fill-height>
-    <v-layout column>
-      <div class="mt-5">ろせんず</div>
-      <div class="routeMap" :value="isLoaded">
-        <hooper :settings="hooperSettings">
-          <slide
-            v-for="(item, index) in userStationIds"
-            :key="item.id"
-          >{{ (index + 1) + stationData(item)["name"] }}</slide>
-        </hooper>
-      </div>
-    </v-layout>
+  <v-container fluid  v-scroll-lock="true">
+    <v-row class="pl-5 station-header">
+      <v-col>
+        <v-row class="pa-1">
+          <v-col cols="3" class="pa-0">
+            <v-card
+              class="pa-1"
+              tile
+              outlined
+              height="50"
+              width="50"
+              style="background-color: #fbe345"
+            >
+              <v-layout
+                style="background-color: white; font-size:1.5em; font-weight: bold;"
+                justify-center
+                align-center
+                fill-height
+              >{{index+1}}</v-layout>
+            </v-card>
+          </v-col>
+          <v-col cols="8" class="pa-0">
+            <v-row class="pa-0">
+              <v-col cols="12" class="pa-0">
+                <v-layout style="color: white; font-size:0.7em;">{{station.yomi}}</v-layout>
+              </v-col>
+              <v-col cols="12" class="pa-0">
+                <v-layout style="color: white; font-size:1.8em;">{{station.name}}駅</v-layout>
+              </v-col>
+            </v-row>
+          </v-col>
+        </v-row>
+        <v-row class="pa-1">
+          <v-col cols="12" class="pa-0">
+            <v-layout style="color: white; font-size:0.9em;">エキチョウ: {{station.userName}}</v-layout>
+          </v-col>
+        </v-row>
+        <v-row class="pa-1">
+          <v-col cols="12" class="pa-0">
+            <v-layout style="color: white; font-size:0.9em;">コメント: {{station.comment}}</v-layout>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+    <v-row class="hopper-back">
+      <v-col>
+        <div class="routeMap" :value="isLoaded">
+          <hooper
+            class="pt-0 pb-0"
+            :settings="hooperSettings"
+            @slide="onSlide"
+            ref="hoopercontainer"
+          >
+            <slide v-for="(item, idx) in userStationIds" :key="item.id">
+              <v-row class="pa-2" v-bind:style="{ 'margin-left': marginIdx(idx), 'margin-right': marginRight(idx) }">
+                <v-col cols="2" class="pa-2">
+                  <v-card
+                    class="pa-1"
+                    tile 
+                    outlined
+                    height="40"
+                    width="40"
+                    style="background-color: #fbe345"
+                  >
+                    <v-layout
+                      style="background-color: white; font-weight: bold;"
+                      justify-center
+                      align-center
+                      fill-height
+                    >{{idx+1}}</v-layout>
+                  </v-card>
+                </v-col>
+                <v-col
+                  cols="9"
+                  class="pa-0"
+                  style="color: black;"
+                  v-bind:style="{ 'font-size': fontSize(idx), 'font-weight': fontWeight(idx) }"
+                >
+                  <v-card class="pa-3">{{stationData(item)["name"] }}駅</v-card>
+                </v-col>
+              </v-row>
+            </slide>
+          </hooper>
+        </div>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -33,12 +107,13 @@ export default {
         yomi: "",
         userName: "",
         comment: "",
+        level: 1
       },
       stationDatas: {},
       userStationIds: [],
       hooperSettings: {
         itemsToShow: 3,
-        centerMode: false,
+        centerMode: true,
         pagination: false,
         infiniteScroll: true,
         vertical: true,
@@ -69,6 +144,54 @@ export default {
     });
   },
   methods: {
+    onSlide(slider) {
+      console.log("currentSlide = " + slider.currentSlide);
+      var idx = slider.currentSlide;
+      this.updateStation(idx);
+    },
+    fontSize(idx) {
+      if (idx == this.$refs.hoopercontainer.currentSlide) {
+        return "2.0em";
+      } else {
+        return "1.0em";
+      }
+    },
+    fontWeight(idx) {
+      if (idx == this.$refs.hoopercontainer.currentSlide) {
+        return "bold";
+      } else {
+        return "normal";
+      }
+    },
+    marginIdx(idx) {
+      if (idx == this.$refs.hoopercontainer.currentSlide) {
+        return "30px";
+      } else {
+        return "0px";
+      }
+    },
+    marginRight(idx) {
+      if (idx != this.$refs.hoopercontainer.currentSlide) {
+        return "30px";
+      } else {
+        return "0px";
+      }
+    },
+    updateStation(idx) {
+      console.log("index = " + idx);
+      if (idx < this.userStationIds.length) {
+        var stationId = this.userStationIds[idx];
+        var stationData = this.stationDatas[stationId];
+        if (stationData) {
+          this.index = idx;
+          this.station.name = stationData.name;
+          this.station.yomi = stationData.yomi;
+          this.station.userName = stationData.userName;
+          this.station.comment = stationData.comment;
+          this.station.level = stationData.level;
+        }
+      }
+    },
     stationData(stationId) {
       var station = this.stationDatas[stationId];
       return station
@@ -79,12 +202,12 @@ export default {
             yomi: "",
             userName: "",
             comment: "",
+            level: 1
           };
     },
     loadStations(userDoc) {
       this.userStationIds = [userDoc.stationId];
       this.userStationIds = this.userStationIds.concat(userDoc.stations);
-      this.userStationIds = this.userStationIds.reverse();
 
       // 重複チェック
       var stationIds = this.userStationIds.filter(function (x, i, self) {
@@ -108,10 +231,12 @@ export default {
               yomi: data.stationYomi,
               userName: data.userName,
               comment: data.aboutStation,
+              level: data.stationLevel
             };
             _this.stationDatas[doc.id] = station;
           });
           _this.isLoaded = true;
+          _this.updateStation(0);
           console.log("Stations loaded.");
         })
         .catch((error) => {
@@ -123,9 +248,22 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.container {
+  max-width: 100vw !important;
+  padding: 0px !important;
+}
+.hopper-back {
+  background-image: url("~@/assets/routeback.jpg");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}
 .hooper {
-  height: 100vh;
+  height: 80vh;
   outline: 0 !important;
+}
+.station-header {
+  background-color: #4a4a42;
 }
 </style>
