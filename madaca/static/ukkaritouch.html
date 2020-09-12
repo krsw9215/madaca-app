@@ -50,6 +50,7 @@
     const app = this;
 
     var markerFound = false;
+    var isLoading = false;
     var timer = null;
 
     window.onload = function () {
@@ -57,7 +58,7 @@
       m.addEventListener("markerFound", (e) => {
         console.log("found");
         app.markerFound = true;
-        app.timer = setTimeout(app.cmanPosGet, 2000);
+        app.timer = setTimeout(app.cmanPosGet, 1000);
       });
       m.addEventListener("markerLost", (e) => {
         console.log("found");
@@ -69,6 +70,11 @@
     };
 
     function addStation(latitude, longitude) {
+      if (this.isLoading){
+        return;
+      }
+      this.isLoading = true;
+
       const func = firebase.functions().httpsCallable("addStation");
       func({ latitude: latitude, longitude: longitude })
         .then((res) => {

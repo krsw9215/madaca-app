@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid  v-scroll-lock="true">
+  <v-container fluid v-scroll-lock="true">
     <v-row class="pl-5 station-header">
       <v-col>
         <v-row class="pa-1">
@@ -17,7 +17,7 @@
                 justify-center
                 align-center
                 fill-height
-              >{{index+1}}</v-layout>
+              >{{currentIndex+1}}</v-layout>
             </v-card>
           </v-col>
           <v-col cols="8" class="pa-0">
@@ -39,6 +39,7 @@
         <v-row class="pa-1">
           <v-col cols="12" class="pa-0">
             <v-layout style="color: white; font-size:0.9em;">コメント: {{station.comment}}</v-layout>
+            <!--<v-layout style="color: gray; font-size:0.9em;">{{debugIndex}}</v-layout>-->
           </v-col>
         </v-row>
       </v-col>
@@ -53,11 +54,14 @@
             ref="hoopercontainer"
           >
             <slide v-for="(item, idx) in userStationIds" :key="item.id">
-              <v-row class="pa-2" v-bind:style="{ 'margin-left': marginIdx(idx), 'margin-right': marginRight(idx) }">
-                <v-col cols="2" class="pa-2">
+              <v-row
+                class="pa-1"
+                v-bind:style="{ 'margin-left': marginIdx(idx), 'margin-right': marginRight(idx) }"
+              >
+                <v-col cols="3" class="pa-2">
                   <v-card
                     class="pa-1"
-                    tile 
+                    tile
                     outlined
                     height="40"
                     width="40"
@@ -101,13 +105,14 @@ export default {
     return {
       isLoading: false,
       isLoaded: false,
-      index: 0,
+      currentIndex: 0,
+      debugIndex: 0,
       station: {
         name: "",
         yomi: "",
         userName: "",
         comment: "",
-        level: 1
+        level: 1,
       },
       stationDatas: {},
       userStationIds: [],
@@ -146,44 +151,69 @@ export default {
   methods: {
     onSlide(slider) {
       console.log("currentSlide = " + slider.currentSlide);
-      var idx = slider.currentSlide;
+      const idx = this.normarizeIndex(slider.currentSlide);
+      this.debugIndex = idx;
       this.updateStation(idx);
     },
+    normarizeIndex(slideIndex) {
+      var idx = Math.abs(slideIndex);
+      if (this.userStationIds.length > 0) {
+        while (idx >= this.userStationIds.length) {
+          idx = idx - this.userStationIds.length;
+        }
+        if (idx < 0) {
+          idx = 0;
+        }
+      }
+      return idx;
+    },
     fontSize(idx) {
-      if (idx == this.$refs.hoopercontainer.currentSlide) {
+      const slideIndex = this.normarizeIndex(
+        this.$refs.hoopercontainer.currentSlide
+      );
+      if (idx == slideIndex) {
         return "2.0em";
       } else {
         return "1.0em";
       }
     },
     fontWeight(idx) {
-      if (idx == this.$refs.hoopercontainer.currentSlide) {
+      const slideIndex = this.normarizeIndex(
+        this.$refs.hoopercontainer.currentSlide
+      );
+      if (idx == slideIndex) {
         return "bold";
       } else {
         return "normal";
       }
     },
     marginIdx(idx) {
-      if (idx == this.$refs.hoopercontainer.currentSlide) {
-        return "30px";
+      const slideIndex = this.normarizeIndex(
+        this.$refs.hoopercontainer.currentSlide
+      );
+      if (idx == slideIndex) {
+        return "20px";
       } else {
         return "0px";
       }
     },
     marginRight(idx) {
-      if (idx != this.$refs.hoopercontainer.currentSlide) {
-        return "30px";
+      const slideIndex = this.normarizeIndex(
+        this.$refs.hoopercontainer.currentSlide
+      );
+      if (idx == slideIndex) {
+        return "10px";
       } else {
-        return "0px";
+        return "40px";
       }
     },
     updateStation(idx) {
       console.log("index = " + idx);
       if (idx < this.userStationIds.length) {
-        var stationId = this.userStationIds[idx];
-        var stationData = this.stationDatas[stationId];
+        const stationId = this.userStationIds[idx];
+        const stationData = this.stationDatas[stationId];
         if (stationData) {
-          this.index = idx;
+          this.currentIndex = idx;
           this.station.name = stationData.name;
           this.station.yomi = stationData.yomi;
           this.station.userName = stationData.userName;
@@ -193,16 +223,15 @@ export default {
       }
     },
     stationData(stationId) {
-      var station = this.stationDatas[stationId];
+      const station = this.stationDatas[stationId];
       return station
         ? station
         : {
-            index: 0,
             name: "",
             yomi: "",
             userName: "",
             comment: "",
-            level: 1
+            level: 1,
           };
     },
     loadStations(userDoc) {
@@ -231,7 +260,7 @@ export default {
               yomi: data.stationYomi,
               userName: data.userName,
               comment: data.aboutStation,
-              level: data.stationLevel
+              level: data.stationLevel,
             };
             _this.stationDatas[doc.id] = station;
           });

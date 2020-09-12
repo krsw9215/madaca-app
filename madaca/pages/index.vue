@@ -5,8 +5,13 @@
         <v-flex xs12 sm8 md6>
           <div class="mt-5">
             <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
+          <div class="text-center mt-1" style="color: black; font-size:1.0em;">
+            <p>
+              あつまったえき：{{stationCount}}
+            </p>
           </div>
-          <div class="text-center mt-10">
+          </div>
+          <div class="text-center mt-7">
             <p>
               <v-btn large rounded class="menueBtn" width="200px" @click="showUkkariTouch">うっかりタッチ</v-btn>
             </p>
@@ -56,7 +61,7 @@ export default {
     return {
       isLoading: false,
       isRegisterd: false,
-      stationName: "",
+      stationCount: 0,
       userName: "",
     };
   },
@@ -103,18 +108,8 @@ export default {
         this.$router.replace("/register");
       } else {
         this.userName = userDoc.userName;
-        const app = this;
-        firestore
-          .collection("Stations")
-          .doc(userDoc.stationId)
-          .get()
-          .then((doc) => {
-            app.stationName = doc.data().stationName;
-            this.isRegisterd = true;
-          })
-          .catch((error) => {
-            console.error("Error writing document: ", error);
-          });
+        this.stationCount = userDoc.stations.length;
+        this.isRegisterd = true;
       }
     },
     showUkkariTouch() {

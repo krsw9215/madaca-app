@@ -52,27 +52,42 @@ export default {
       mdiEmail,
       emailSent: false,
       isLoading: true,
+      email: null,
     };
   },
   mounted() {
-    this.isLoading = true;
+    this.isLoading = false;
+    const app = this;
 
     if (auth.isSignInWithEmailLink(window.location.href)) {
-      const email = this.$cookiz.get("email");
-      if (!email) {
-        email = window.prompt("登録に使用したメールアドレスを入力してください");
+      this.email = this.$cookiz.get("email");
+      if (!this.email) {
+        this.email = window.prompt("登録に使用したメールアドレスを入力してください");
       }
-      if (email) {
-        auth.signInWithEmailLink(email, window.location.href);
-        this.$cookiz.set("email", null);
+      if (this.email) {
+        this.isLoading = true;
+        auth
+          .signInWithEmailLink(this.email, window.location.href)
+          .then(function () {
+            app.isLoading = false;
+            app.$cookiz.set("email", null);
+          })
+          .catch(function (error) {
+            app.isLoading = false;
+            alert(error);
+            app.$cookiz.set("email", null);
+            console.error(error);
+          });
       }
+    } else {
+      this.isLoading = true;
     }
 
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.$router.replace("/");
+        app.$router.replace("/");
       } else {
-        this.isLoading = false;
+        app.isLoading = false;
       }
     });
   },
@@ -86,20 +101,22 @@ export default {
         handleCodeInApp: true,
       };
 
-      let email = this.$cookiz.get("email");
-      if (!email) {
-        email = window.prompt("メールアドレスを入力してください");
+      this.email = this.$cookiz.get("email");
+      if (!this.email) {
+        this.email = window.prompt("メールアドレスを入力してください");
       }
-      if (email) {
+      if (this.email) {
         const app = this;
         auth
-          .sendSignInLinkToEmail(email, actionCodeSettings)
+          .sendSignInLinkToEmail(this.email, actionCodeSettings)
           .then(function () {
-            app.$cookiz.set("email", email);
+            app.$cookiz.set("email", app.email);
             app.emailSent = true;
           })
           .catch(function (error) {
             alert("エラーが起きました。メールアドレスを確認してください。");
+            app.$cookiz.set("email", null);
+            app.email = null;
             console.error(error);
           });
       }

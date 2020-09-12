@@ -209,7 +209,10 @@ export default {
       }
     },
     logout() {
-      auth.signOut();
+      let ret = confirm("ログアウトしますか？");
+      if (ret == true) {
+        auth.signOut();
+      }
     },
   },
 };

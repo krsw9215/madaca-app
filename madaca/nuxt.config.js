@@ -8,7 +8,7 @@ export default {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + 'MADACA',
+    titleTemplate: '%s',
     title: 'MADACA' || '',
     meta: [
       { charset: 'utf-8' },
