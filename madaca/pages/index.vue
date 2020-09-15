@@ -96,7 +96,8 @@ export default {
         })
         .then((doc) => {
           console.log("Document successfully written!");
-          this.nameCheck(doc.data());
+          this.isRegisterd = false;
+          this.$router.replace("/register");
         })
         .catch((error) => {
           console.error("Error writing document: ", error);

@@ -70,12 +70,12 @@ export default {
           .signInWithEmailLink(this.email, window.location.href)
           .then(function () {
             app.isLoading = false;
-            app.$cookiz.set("email", null);
+            app.$cookiz.remove("email");
           })
           .catch(function (error) {
             app.isLoading = false;
             alert(error);
-            app.$cookiz.set("email", null);
+            app.$cookiz.remove("email");
             console.error(error);
           });
       }
@@ -115,7 +115,7 @@ export default {
           })
           .catch(function (error) {
             alert("エラーが起きました。メールアドレスを確認してください。");
-            app.$cookiz.set("email", null);
+            app.$cookiz.remove("email");
             app.email = null;
             console.error(error);
           });

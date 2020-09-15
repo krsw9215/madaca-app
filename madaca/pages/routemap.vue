@@ -39,7 +39,7 @@
         <v-row class="pa-1">
           <v-col cols="12" class="pa-0">
             <v-layout style="color: white; font-size:0.9em;">コメント: {{station.comment}}</v-layout>
-            <!--<v-layout style="color: gray; font-size:0.9em;">{{debugIndex}}</v-layout>-->
+            <!-- <v-layout style="color: gray; font-size:0.9em;">{{debugSlideIndex}}, {{debugIndex}}</v-layout> -->
           </v-col>
         </v-row>
       </v-col>
@@ -107,6 +107,7 @@ export default {
       isLoaded: false,
       currentIndex: 0,
       debugIndex: 0,
+      debugSlideIndex: 0,
       station: {
         name: "",
         yomi: "",
@@ -150,19 +151,19 @@ export default {
   },
   methods: {
     onSlide(slider) {
-      console.log("currentSlide = " + slider.currentSlide);
+      this.debugSlideIndex = slider.currentSlide;
       const idx = this.normarizeIndex(slider.currentSlide);
       this.debugIndex = idx;
       this.updateStation(idx);
     },
     normarizeIndex(slideIndex) {
-      var idx = Math.abs(slideIndex);
+      var idx = slideIndex;
       if (this.userStationIds.length > 0) {
+        if (idx < 0){
+          idx = this.userStationIds.length + idx;
+        }
         while (idx >= this.userStationIds.length) {
           idx = idx - this.userStationIds.length;
-        }
-        if (idx < 0) {
-          idx = 0;
         }
       }
       return idx;
