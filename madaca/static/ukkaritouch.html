@@ -70,7 +70,7 @@
     };
 
     function addStation(latitude, longitude) {
-      if (this.isLoading){
+      if (this.isLoading) {
         return;
       }
       this.isLoading = true;
@@ -87,8 +87,15 @@
               .get()
               .then((doc) => {
                 app.isLoading = false;
-                let newStationName = doc.data().stationName;
-                alert("駅を獲得しました！:" + newStationName + "駅");
+                let stationData = doc.data();
+                alert(
+                  "駅を獲得しました！\n\n「" +
+                    stationData.stationName +
+                    "駅」\n\nエキチョウ：" +
+                    stationData.userName +
+                    "\nコメント:" +
+                    stationData.aboutStation
+                );
                 window.location.href = "/";
               })
               .catch((error) => {
@@ -176,12 +183,12 @@
   >
     <a-assets>
       <a-asset-item
-        id="hologramm-obj"
-        src="/hologramm/hologramm.obj"
+        id="station-obj"
+        src="/station/kyojima_station.obj"
       ></a-asset-item>
       <a-asset-item
-        id="hologramm-mtl"
-        src="/hologramm/hologramm.mtl"
+        id="station-mtl"
+        src="/station/kyojima_station.mtl"
       ></a-asset-item>
     </a-assets>
     <a-nft
@@ -195,10 +202,11 @@
     >
       <a-obj-model
         id="ukkaritouch-model"
-        position="200 0 -550"
-        src="#hologramm-obj"
-        mtl="#hologramm-mtl"
-        scale="15 15 15"
+        position="200 0 0"
+        rotation="-45 0 0"
+        src="#station-obj"
+        mtl="#station-mtl"
+        scale="1000 1000 1000"
       ></a-obj-model>
     </a-nft>
     <a-entity camera></a-entity>

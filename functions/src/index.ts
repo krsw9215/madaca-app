@@ -53,7 +53,7 @@ export const addStation = functions.https.onCall((data, context) => {
           if (hours < 24) {
             let distance = geo.distance(prevGeo, geopoint);
             if (distance < 0.01) {
-              let errorMes = "同じ場所で駅をゲットできるのは24時間に1回です。";
+              let errorMes = "同じ場所で連続で駅をゲットできるのは24時間に1回です。\n他の場所も探してみよう！";
               throw new functions.https.HttpsError("out-of-range", errorMes, {
                 distance: distance,
                 hours: hours,
@@ -61,7 +61,7 @@ export const addStation = functions.https.onCall((data, context) => {
             }
           }
         }
-        return lotteryStation();
+        return lotteryStation(uid);
       } else {
         throw new functions.https.HttpsError(
           "invalid-argument",
@@ -71,12 +71,17 @@ export const addStation = functions.https.onCall((data, context) => {
     })
     .then((station_id) => {
       stationId = station_id;
-      return admin.firestore().collection("Users").doc(uid).collection("stations").add({
-        user_id: uid,
-        station_id: stationId,
-        date: Timestamp.now(),
-        geography: geopoint,
-      });
+      return admin
+        .firestore()
+        .collection("Users")
+        .doc(uid)
+        .collection("stations")
+        .add({
+          user_id: uid,
+          station_id: stationId,
+          date: Timestamp.now(),
+          geography: geopoint,
+        });
     })
     .then(() => {
       var stations: string[] = [];
@@ -94,14 +99,11 @@ export const addStation = functions.https.onCall((data, context) => {
       return { station_id: stationId };
     })
     .catch((error) => {
-      throw new functions.https.HttpsError(
-        "invalid-argument",
-        error
-      );
+      throw new functions.https.HttpsError("invalid-argument", error);
     });
 });
 
-async function lotteryStation() {
+async function lotteryStation(uid: string) {
   const rate = [1000, 500, 100, 10, 2];
   const random = Math.floor(Math.random() * 1000);
   for (let i = 5; i > 0; i--) {
@@ -116,9 +118,27 @@ async function lotteryStation() {
         });
 
       if (querySnapshot.size > 0) {
-        const stnum = Math.floor(Math.random() * querySnapshot.size);
-        const stationRef = querySnapshot.docs[stnum];
-        return Promise.resolve(stationRef.id);
+        const maxTry = 10;
+        for (let j = 0; j < maxTry; j++) {
+          const stnum = Math.floor(Math.random() * querySnapshot.size);
+          const stationRef = querySnapshot.docs[stnum];
+          const stationId = stationRef.id;
+          if (i == 1 && j == maxTry - 1) {
+            return Promise.resolve(stationId);
+          } else {
+            const stationSnapshot = await admin
+              .firestore()
+              .collection("Users")
+              .doc(uid)
+              .collection("stations")
+              .where("station_id", "==", stationId)
+              .get()
+              .catch((err) => {});
+            if (!stationSnapshot || stationSnapshot.size == 0) {
+              return Promise.resolve(stationId);
+            }
+          }
+        }
       }
     }
   }

@@ -159,7 +159,7 @@ export default {
     normarizeIndex(slideIndex) {
       var idx = slideIndex;
       if (this.userStationIds.length > 0) {
-        if (idx < 0){
+        if (idx < 0) {
           idx = this.userStationIds.length + idx;
         }
         while (idx >= this.userStationIds.length) {
@@ -235,7 +235,7 @@ export default {
             level: 1,
           };
     },
-    loadStations(userDoc) {
+    async loadStations(userDoc) {
       this.userStationIds = [userDoc.stationId];
       this.userStationIds = this.userStationIds.concat(userDoc.stations);
 
@@ -248,31 +248,47 @@ export default {
       this.isLoaded = false;
       const _this = this;
       console.log("Start load stations.");
-      firestore
-        .collection("Stations")
-        .where("__name__", "in", stationIds)
-        .get()
-        .then((snapshot) => {
-          _this.isLoading = false;
-          snapshot.forEach((doc) => {
-            let data = doc.data();
-            let station = {
-              name: data.stationName,
-              yomi: data.stationYomi,
-              userName: data.userName,
-              comment: data.aboutStation,
-              level: data.stationLevel,
-            };
-            _this.stationDatas[doc.id] = station;
+
+      var stationIndex = 0;
+      var stationCount = stationIds.length;
+
+      while (stationIndex < stationCount) {
+        var tmpStaionIds = [];
+        for (let i = 0; i < 10; i++) {
+          if (stationIndex < stationCount) {
+            tmpStaionIds.push(stationIds[stationIndex]);
+            stationIndex = stationIndex + 1;
+          } else {
+            break;
+          }
+        }
+
+        await firestore
+          .collection("Stations")
+          .where("__name__", "in", tmpStaionIds)
+          .get()
+          .then((snapshot) => {
+            _this.isLoading = false;
+            snapshot.forEach((doc) => {
+              let data = doc.data();
+              let station = {
+                name: data.stationName,
+                yomi: data.stationYomi,
+                userName: data.userName,
+                comment: data.aboutStation,
+                level: data.stationLevel,
+              };
+              _this.stationDatas[doc.id] = station;
+            });
+          })
+          .catch((error) => {
+            _this.isLoading = false;
+            console.error("Error writing document: ", error);
           });
-          _this.isLoaded = true;
-          _this.updateStation(0);
-          console.log("Stations loaded.");
-        })
-        .catch((error) => {
-          _this.isLoading = false;
-          console.error("Error writing document: ", error);
-        });
+      }
+      this.isLoaded = true;
+      this.updateStation(0);
+      console.log("Stations loaded.");
     },
   },
 };

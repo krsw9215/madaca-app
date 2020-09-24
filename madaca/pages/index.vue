@@ -4,36 +4,62 @@
       <v-layout column justify-center align-center>
         <v-flex xs12 sm8 md6>
           <div class="mt-5">
-            <v-img width="300px" :src="require('@/assets/madaca_logo.png')"></v-img>
-          <div class="text-center mt-1" style="color: black; font-size:1.0em;">
-            <p>
-              あつまったえき：{{stationCount}}
-            </p>
-          </div>
-          </div>
-          <div class="text-center mt-7">
-            <p>
-              <v-btn large rounded class="menueBtn" width="200px" @click="showUkkariTouch">うっかりタッチ</v-btn>
-            </p>
+            <v-img
+              width="300px"
+              :src="require('@/assets/madaca_logo.png')"
+            ></v-img>
+            <div class="text-center mt-1" style="color: black; font-size: 1em">
+              <p>あつまったえき：{{ stationCount }}</p>
+            </div>
           </div>
           <div class="text-center mt-7">
             <p>
-              <v-btn large rounded class="menueBtn" width="200px" @click="routeMap">ろせんず</v-btn>
-            </p>
-          </div>
-          <div class="text-center mt-7">
-            <p>
-              <v-btn large rounded class="menueBtn" width="200px" @click="story">ストーリー</v-btn>
-            </p>
-          </div>
-          <div class="text-center mt-7">
-            <p>
-              <v-btn large rounded class="menueBtn" width="200px" @click="howto">つかいかた</v-btn>
+              <v-btn
+                large
+                rounded
+                class="menueBtn"
+                width="200px"
+                @click="showUkkariTouch"
+                >うっかりタッチ</v-btn
+              >
             </p>
           </div>
           <div class="text-center mt-7">
             <p>
-              <v-btn large rounded class="menueBtn" width="200px" @click="setting">せってい</v-btn>
+              <v-btn
+                large
+                rounded
+                class="menueBtn"
+                width="200px"
+                @click="routeMap"
+                >ろせんず</v-btn
+              >
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="story"
+                >ストーリー</v-btn
+              >
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn large rounded class="menueBtn" width="200px" @click="howto"
+                >つかいかた</v-btn
+              >
+            </p>
+          </div>
+          <div class="text-center mt-7">
+            <p>
+              <v-btn
+                large
+                rounded
+                class="menueBtn"
+                width="200px"
+                @click="setting"
+                >せってい</v-btn
+              >
             </p>
           </div>
           <v-overlay :value="isLoading">
@@ -57,6 +83,20 @@ import { functions } from "../plugins/firebase";
 
 export default {
   name: "HomePage",
+  head() {
+    return {
+      script: [
+        { src: "/js/bookmark_bubble.js" },
+        { src: "/js/add_shortcut.js", body: true },
+      ],
+      link: [
+          {
+            rel: 'apple-touch-icon-precomposed',
+            href: '/apple-touch-icon-precomposed.png'
+          }
+        ]
+    };
+  },
   data() {
     return {
       isLoading: false,
