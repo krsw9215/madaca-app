@@ -13,32 +13,45 @@
               style="background-color: #fbe345"
             >
               <v-layout
-                style="background-color: white; font-size:1.5em; font-weight: bold;"
+                style="
+                  background-color: white;
+                  font-size: 1.5em;
+                  font-weight: bold;
+                "
                 justify-center
                 align-center
                 fill-height
-              >{{currentIndex+1}}</v-layout>
+                >{{ currentIndex + 1 }}</v-layout
+              >
             </v-card>
           </v-col>
           <v-col cols="8" class="pa-0">
             <v-row class="pa-0">
               <v-col cols="12" class="pa-0">
-                <v-layout style="color: white; font-size:0.7em;">{{station.yomi}}</v-layout>
+                <v-layout style="color: white; font-size: 0.7em">{{
+                  station.yomi
+                }}</v-layout>
               </v-col>
               <v-col cols="12" class="pa-0">
-                <v-layout style="color: white; font-size:1.8em;">{{station.name}}駅</v-layout>
+                <v-layout style="color: white; font-size: 1.8em"
+                  >{{ station.name }}駅</v-layout
+                >
               </v-col>
             </v-row>
           </v-col>
         </v-row>
         <v-row class="pa-1">
           <v-col cols="12" class="pa-0">
-            <v-layout style="color: white; font-size:0.9em;">エキチョウ: {{station.userName}}</v-layout>
+            <v-layout style="color: white; font-size: 0.9em"
+              >エキチョウ: {{ station.userName }}</v-layout
+            >
           </v-col>
         </v-row>
         <v-row class="pa-1">
           <v-col cols="12" class="pa-0">
-            <v-layout style="color: white; font-size:0.9em;">コメント: {{station.comment}}</v-layout>
+            <v-layout style="color: white; font-size: 0.9em"
+              >コメント: {{ station.comment }}</v-layout
+            >
             <!-- <v-layout style="color: gray; font-size:0.9em;">{{debugSlideIndex}}, {{debugIndex}}</v-layout> -->
           </v-col>
         </v-row>
@@ -56,7 +69,10 @@
             <slide v-for="(item, idx) in userStationIds" :key="item.id">
               <v-row
                 class="pa-1"
-                v-bind:style="{ 'margin-left': marginIdx(idx), 'margin-right': marginRight(idx) }"
+                v-bind:style="{
+                  'margin-left': marginIdx(idx),
+                  'margin-right': marginRight(idx),
+                }"
               >
                 <v-col cols="3" class="pa-2">
                   <v-card
@@ -72,16 +88,26 @@
                       justify-center
                       align-center
                       fill-height
-                    >{{idx+1}}</v-layout>
+                      >{{ idx + 1 }}</v-layout
+                    >
                   </v-card>
                 </v-col>
                 <v-col
                   cols="9"
                   class="pa-0"
-                  style="color: black;"
-                  v-bind:style="{ 'font-size': fontSize(idx), 'font-weight': fontWeight(idx) }"
+                  style="color: black"
+                  v-bind:style="{
+                    'font-size': fontSize(idx),
+                    'font-weight': fontWeight(idx),
+                  }"
                 >
-                  <v-card class="pa-3">{{stationData(item)["name"] }}駅</v-card>
+                  <v-card
+                    class="pa-3"
+                    v-bind:style="{
+                      'background-color': stationBackGround(item),
+                    }"
+                    >{{ stationData(item)["name"] }}駅</v-card
+                  >
                 </v-col>
               </v-row>
             </slide>
@@ -234,6 +260,20 @@ export default {
             comment: "",
             level: 1,
           };
+    },
+    stationBackGround(stationId) {
+      const station = this.stationData(stationId);
+      if (station["level"] === 5) {
+        return "#FF8888";
+      } else if (station["level"] === 4) {
+        return "#00FF00";
+      } else if (station["level"] === 3) {
+        return "#FFF0F5";
+      } else if (station["level"] === 2) {
+        return "#FFFFE0";
+      } else {
+        return "#FFFFFF";
+      }
     },
     async loadStations(userDoc) {
       this.userStationIds = [userDoc.stationId];
